@@ -1,7 +1,7 @@
 package TypewiseAlert;
 
 public class BreachTypeChecker {
-    
+
     public enum BreachType {
         NORMAL,
         TOO_LOW,
