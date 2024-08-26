@@ -1,6 +1,6 @@
 package TypewiseAlert;
 
-public class Main {
+public class TypewiseAlert {
     public static void main(String[] args) {
         BatteryCharacter batteryChar = new BatteryCharacter(CoolingTypeLimits.CoolingType.PASSIVE_COOLING, "BrandX");
         AlertTarget alertTarget = new EmailAlert();
