@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import TypewiseAlert.BreachTypeChecker.BreachType;
 import TypewiseAlert.BreachTypeChecker.CoolingType;
-import TypewiseAlert.AlertSender.AlertTarget;
+import TypewiseAlert.CheckAndAlert.AlertTarget;
 import TypewiseAlert.TypewiseAlert.BatteryCharacter;
 
 public class TypewiseAlertTest {
