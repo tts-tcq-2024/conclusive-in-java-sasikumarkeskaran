@@ -1,9 +1,9 @@
 package TypewiseAlert;
 
 
-import TypewiseAlert.BreachClassifier.BreachType;
-import TypewiseAlert.BreachClassifier.CoolingType;
-import TypewiseAlert.AlertSender.AlertTarget;
+import TypewiseAlert.BreachTypeChecker.BreachType;
+import TypewiseAlert.BreachTypeChecker.CoolingType;
+import TypewiseAlert.CheckAndAlert.AlertTarget;
 
 public class TypewiseAlert 
 {
