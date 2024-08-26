@@ -1,5 +1,5 @@
 package TypewiseAlert;
-import TypewiseAlert.BreachClassifier.BreachType;
+import TypewiseAlert.BreachTypeChecker.BreachType;
 public class CheckAndAlert  {
     public static class AlertTarget {
         public static final AlertTarget TO_CONTROLLER = new AlertTarget("TO_CONTROLLER");
