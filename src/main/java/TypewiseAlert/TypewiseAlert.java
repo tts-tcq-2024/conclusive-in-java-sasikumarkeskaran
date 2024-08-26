@@ -26,12 +26,12 @@ public class TypewiseAlert
     }
 
     public static void checkAndAlert(AlertTarget alertTarget, BatteryCharacter batteryChar, double temperatureInC) {
-        BreachType breachType = BreachClassifier.classifyTemperatureBreach(batteryChar.getCoolingType(), temperatureInC);
+        BreachType breachType = BreachTypeChecker .classifyTemperatureBreach(batteryChar.getCoolingType(), temperatureInC);
 
         if (alertTarget == AlertTarget.TO_CONTROLLER) {
-            AlertSender.sendToController(breachType);
+            CheckAndAlert.sendToController(breachType);
         } else if (alertTarget == AlertTarget.TO_EMAIL) {
-            AlertSender.sendToEmail(breachType);
+            CheckAndAlert.sendToEmail(breachType);
         }
     }
 }
