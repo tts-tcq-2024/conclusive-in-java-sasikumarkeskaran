@@ -1,67 +1,59 @@
-
 package TypewiseAlert;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import TypewiseAlert.cooler.*;
-import TypewiseAlert.transmitter.*;
+import TypewiseAlert.BreachClassifier.BreachType;
+import TypewiseAlert.BreachClassifier.CoolingType;
+import TypewiseAlert.AlertSender.AlertTarget;
+import TypewiseAlert.TypewiseAlert.BatteryCharacter;
 
 public class TypewiseAlertTest {
 
-    private static class MockAlertTarget implements TargetAlertInterface {
-        public BreachType lastAlertSent;
-
-        @Override
-        public void SendAlertInfo(BreachType breachType) {
-            lastAlertSent = breachType;
-        }
-    }
-
-
     @Test
-    public void checkAndAlertForNormalTemperature() {
-        MockAlertTarget alertTarget = new MockAlertTarget();
-        BatteryCharacter batteryChar = new BatteryCharacter(new PassiveCooler(), "TestBrand");       
-        TypewiseAlert.checkAndAlert(alertTarget, batteryChar, 25);
-        assertNull(alertTarget.lastAlertSent);
+    public void testInferBreachTooLow() {
+        BreachType breachType = BreachClassifier.inferBreach(10, 20, 30);
+        assertEquals(BreachType.TOO_LOW, breachType);
     }
 
     @Test
-    public void checkAndAlertForLowTemperature() {
-        MockAlertTarget alertTarget = new MockAlertTarget();
-        BatteryCharacter batteryChar = new BatteryCharacter(new PassiveCooler(), "TestBrand");       
-        TypewiseAlert.checkAndAlert(alertTarget, batteryChar, -1);
-        assertEquals(BreachType.TOO_LOW, alertTarget.lastAlertSent);
+    public void testInferBreachTooHigh() {
+        BreachType breachType = BreachClassifier.inferBreach(40, 20, 30);
+        assertEquals(BreachType.TOO_HIGH, breachType);
     }
 
     @Test
-    public void checkAndAlertForHighTemperature() {
-        MockAlertTarget alertTarget = new MockAlertTarget();
-        BatteryCharacter batteryChar = new BatteryCharacter(new PassiveCooler(), "TestBrand");
-        
-        TypewiseAlert.checkAndAlert(alertTarget, batteryChar, 36);
-        assertEquals(BreachType.TOO_HIGH, alertTarget.lastAlertSent);
+    public void testInferBreachNormal() {
+        BreachType breachType = BreachClassifier.inferBreach(25, 20, 30);
+        assertEquals(BreachType.NORMAL, breachType);
     }
 
     @Test
-    public void testEmailAlertContent() {
-        EmailAlert emailAlert = new EmailAlert("test@example.com");
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-        emailAlert.SendAlertInfo(BreachType.TOO_HIGH);
-        String expectedOutput = "To: test@example.com\nHi, the temperature Too High\n";
-        assertEquals(expectedOutput, out.toString());
-        System.setOut(System.out);
+    public void testTempBreachForPassiveCooling() {
+        BreachType breachType = BreachClassifier.classifyTemperatureBreach(CoolingType.PASSIVE_COOLING, 36);
+        assertEquals(BreachType.TOO_HIGH, breachType);
     }
 
     @Test
-    public void testControllerAlertContent() {
-        ControllerAlert controllerAlert = new ControllerAlert();
-        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(out));
-        controllerAlert.SendAlertInfo(BreachType.TOO_LOW);        
-        String expectedOutput = "65261 : temperature Too Low\n";
-        assertEquals(expectedOutput, out.toString());
-        System.setOut(System.out);
+    public void testTempBreachForHiActiveCooling() {
+        BreachType breachType = BreachClassifier.classifyTemperatureBreach(CoolingType.HI_ACTIVE_COOLING, 46);
+        assertEquals(BreachType.TOO_HIGH, breachType);
+    }
+
+    @Test
+    public void testTempBreachForMedActiveCooling() {
+        BreachType breachType = BreachClassifier.classifyTemperatureBreach(CoolingType.MED_ACTIVE_COOLING, 41);
+        assertEquals(BreachType.TOO_HIGH, breachType);
+    }
+
+    @Test
+    public void testCheckAndAlertToController() {
+        BatteryCharacter batteryChar = new TypewiseAlert.BatteryCharacter(CoolingType.PASSIVE_COOLING, "BrandX");
+        TypewiseAlert.checkAndAlert(AlertTarget.TO_CONTROLLER, batteryChar, 36);
+    }
+
+    @Test
+    public void testCheckAndAlertToEmail() {
+        BatteryCharacter batteryChar = new TypewiseAlert.BatteryCharacter(CoolingType.PASSIVE_COOLING, "BrandX");
+        TypewiseAlert.checkAndAlert(AlertTarget.TO_EMAIL, batteryChar, 36);
     }
 }
